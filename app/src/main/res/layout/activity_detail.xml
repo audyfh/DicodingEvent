@@ -1,0 +1,84 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Back Button -->
+        <ImageButton
+            android:id="@+id/buttonBack"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/back"
+            android:src="@drawable/ic_back" />
+
+        <!-- Cover Image -->
+        <ImageView
+            android:id="@+id/imageEventCover"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/event_cover"
+            android:layout_marginTop="8dp" />
+
+        <!-- Event Name -->
+        <TextView
+            android:id="@+id/textEventName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/event_name"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <!-- Event Owner -->
+        <TextView
+            android:id="@+id/textEventOwner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/organized_by_owner_name"
+            android:textSize="16sp" />
+
+        <!-- Event Time -->
+        <TextView
+            android:id="@+id/textEventTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/event_time_begin_time"
+            android:textSize="16sp" />
+
+        <!-- Remaining Quota -->
+        <TextView
+            android:id="@+id/textEventQuota"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/remaining_quota_x"
+            android:textSize="16sp" />
+
+        <!-- Event Description -->
+        <TextView
+            android:id="@+id/textEventDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/event_description"
+            android:textSize="16sp" />
+
+        <!-- Open Event Link Button -->
+        <Button
+            android:id="@+id/buttonOpenLink"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/open_event_link" />
+    </LinearLayout>
+</ScrollView>
