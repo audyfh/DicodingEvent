@@ -64,6 +64,8 @@ class UpcomingFragment : Fragment() {
         viewModel.event.observe(viewLifecycleOwner){
             if (it.isNotEmpty()){
                 mainAdapter.setData(it)
+            } else {
+                binding.tvError.isVisible = true
             }
         }
     }

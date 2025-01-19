@@ -19,9 +19,10 @@ class HomeViewModel : ViewModel() {
     private val _upcomingEvent = MutableLiveData<List<Events>>()
     val upcomingEvent : LiveData<List<Events>> = _upcomingEvent
 
-
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
+
+
 
     init {
         getUpcomingEvent()
@@ -30,19 +31,21 @@ class HomeViewModel : ViewModel() {
 
     private fun getUpcomingEvent(){
         _isLoading.value = true
-        val client = ApiConfig.getApiService().getByCategory(0)
+        val client = ApiConfig.getApiService().getByCategory(1)
 
         client.enqueue(object : Callback<EventResponse> {
             override fun onResponse(call: Call<EventResponse>, response: Response<EventResponse>) {
                 _isLoading.value = false
                 if (response.isSuccessful){
-                    _upcomingEvent.value = response.body()?.listEvents?.take(5)
+                    _upcomingEvent.value = response.body()?.listEvents
                 } else {
+                    _upcomingEvent.value = emptyList()
                     Log.e("HomeViewModel",response.message())
                 }
             }
 
             override fun onFailure(call: Call<EventResponse>, t: Throwable) {
+                _upcomingEvent.value = emptyList()
                 _isLoading.value = false
                 Log.e("HomeViewModel", t.message.toString())
             }
@@ -52,7 +55,7 @@ class HomeViewModel : ViewModel() {
 
     private fun getAllEvent(){
         _isLoading.value = true
-        val client = ApiConfig.getApiService().getByCategory(1)
+        val client = ApiConfig.getApiService().getByCategory(0)
 
         client.enqueue(object : Callback<EventResponse> {
             override fun onResponse(call: Call<EventResponse>, response: Response<EventResponse>) {
@@ -60,16 +63,20 @@ class HomeViewModel : ViewModel() {
                     _isLoading.value = false
                     _event.value = response.body()?.listEvents
                 } else {
+                    _event.value = emptyList()
                     Log.e("HomeViewModel",response.message())
                 }
             }
 
             override fun onFailure(call: Call<EventResponse>, t: Throwable) {
                _isLoading.value = false
+                _event.value = emptyList()
                 Log.e("HomeViewModel", t.message.toString())
             }
         })
 
     }
+
+
 
 }

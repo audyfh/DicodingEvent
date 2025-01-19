@@ -1,4 +1,4 @@
-package com.example.dicodingevent.ui.upcoming
+package com.example.dicodingevent.ui.search
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -11,39 +11,33 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class UpcomingViewModel : ViewModel() {
-
-    private val _event = MutableLiveData<List<Events>>()
-    val event : LiveData<List<Events>> = _event
+class SearchViewModel : ViewModel() {
+    private val _searchResults = MutableLiveData<List<Events>>()
+    val searchResults: LiveData<List<Events>> = _searchResults
 
     private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading : LiveData<Boolean> = _isLoading
+    val isLoading: LiveData<Boolean> = _isLoading
 
-    init {
-        getUpcomingEvent()
-    }
 
-    private fun getUpcomingEvent(){
+    fun searchEvents(query: String) {
         _isLoading.value = true
-        val client = ApiConfig.getApiService().getByCategory(1)
-
+        val client = ApiConfig.getApiService().searchEvents(query)
         client.enqueue(object : Callback<EventResponse> {
             override fun onResponse(call: Call<EventResponse>, response: Response<EventResponse>) {
                 _isLoading.value = false
-                if (response.isSuccessful){
-                    _event.value = response.body()?.listEvents
+                if (response.isSuccessful) {
+                    _searchResults.value = response.body()?.listEvents
                 } else {
-                    _event.value = emptyList()
-                    Log.e("UpcomingViewModel",response.message())
+                    _searchResults.value = emptyList()
+                    Log.e("HomeViewModel", "Search failed: ${response.message()}")
                 }
             }
 
             override fun onFailure(call: Call<EventResponse>, t: Throwable) {
-                _event.value = emptyList()
                 _isLoading.value = false
-                Log.e("UpcomingViewModel", t.message.toString())
+                _searchResults.value = emptyList()
+                Log.e("HomeViewModel", "Search error: ${t.message}")
             }
-
         })
     }
 }

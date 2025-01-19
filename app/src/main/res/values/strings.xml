@@ -18,4 +18,11 @@
     <string name="home">Home</string>
     <string name="upcoming">Upcoming</string>
     <string name="completed">Completed</string>
+    <string name="desc">desc</string>
+    <string name="city_name">City Name</string>
+    <string name="error">Error</string>
+    <string name="no_results_found">No results found</string>
+    <string name="remaining_quota">Remaining Quota: %1$s</string>
+    <string name="starting_from">Starting From: %1$s</string>
+    <!-- TODO: Remove or change this placeholder text -->
 </resources>

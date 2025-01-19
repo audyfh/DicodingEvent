@@ -35,6 +35,7 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
         observeViewModel()
+        setupSearchView()
     }
 
     override fun onDestroyView() {
@@ -76,16 +77,38 @@ class HomeFragment : Fragment() {
 
         viewModel.upcomingEvent.observe(viewLifecycleOwner){
             if (it.isNotEmpty()){
-                adapter.setData(it)
+                val maxList = it.take(5)
+                adapter.setData(maxList)
+            } else {
+                binding.tvError.isVisible = true
             }
         }
 
         viewModel.event.observe(viewLifecycleOwner){
             if (it.isNotEmpty()){
-                mainAdapter.setData(it)
+                val maxList = it.take(5)
+                mainAdapter.setData(maxList)
+            } else {
+                binding.tvError.isVisible = true
             }
         }
 
+    }
+
+    private fun setupSearchView() {
+        binding.searchView.setOnQueryTextListener(object : android.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                query?.let {
+                    val action = HomeFragmentDirections.actionHomeFragmentToSearchFragment(it)
+                    findNavController().navigate(action)
+                }
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                return false
+            }
+        })
     }
 
 

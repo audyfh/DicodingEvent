@@ -24,20 +24,22 @@ class FinishedViewModel : ViewModel() {
 
     private fun getFinishedEvent(){
         _isLoading.value = true
-        val client = ApiConfig.getApiService().getByCategory(1)
+        val client = ApiConfig.getApiService().getByCategory(0)
 
         client.enqueue(object : Callback<EventResponse> {
             override fun onResponse(call: Call<EventResponse>, response: Response<EventResponse>) {
                 _isLoading.value = false
                 if (response.isSuccessful){
-                    _event.value = response.body()?.listEvents?.take(5)
+                    _event.value = response.body()?.listEvents
                 } else {
+                    _event.value = emptyList()
                     Log.e("FinishedViewModel",response.message())
                 }
             }
 
             override fun onFailure(call: Call<EventResponse>, t: Throwable) {
                 _isLoading.value = false
+                _event.value = emptyList()
                 Log.e("FinishedViewModel", t.message.toString())
             }
 

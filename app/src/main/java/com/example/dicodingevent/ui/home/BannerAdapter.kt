@@ -1,6 +1,5 @@
 package com.example.dicodingevent.ui.home
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -29,7 +28,7 @@ class BannerAdapter : RecyclerView.Adapter<BannerAdapter.BannerViewHolder>(){
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
+
     fun setData(newEvents: List<Events>) {
         events.clear()
         events.addAll(newEvents)
@@ -54,6 +53,4 @@ class BannerAdapter : RecyclerView.Adapter<BannerAdapter.BannerViewHolder>(){
             onItemClickCallback?.invoke(event)
         }
     }
-
-
 }

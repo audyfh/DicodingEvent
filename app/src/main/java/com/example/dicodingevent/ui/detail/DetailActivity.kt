@@ -7,6 +7,7 @@ import android.text.Html
 import android.text.Spanned
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.example.dicodingevent.R
 import com.example.dicodingevent.databinding.ActivityDetailBinding
 
 class DetailActivity : AppCompatActivity() {
@@ -23,9 +24,9 @@ class DetailActivity : AppCompatActivity() {
 
         with(binding){
             textEventName.text = event.name
-            textEventTime.text = "Starting from : " + event.beginTime
+            textEventTime.text = getString(R.string.starting_from, event.beginTime)
             textEventOwner.text = event.ownerName
-            textEventQuota.text = "Remaining Quota: ${event.quota}"
+            textEventQuota.text = getString(R.string.remaining_quota, event.quota.toString())
             textEventDescription.text = stripHtmlTags(event.description)
             Glide.with(this@DetailActivity)
                 .load(event.mediaCover)

@@ -22,11 +22,26 @@ class MainActivity : AppCompatActivity() {
         val navController = navHostFragment.navController
         val appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.homeFragment,R.id.upcomingFragment,R.id.finishedFragment
+                R.id.homeFragment,R.id.upcomingFragment,R.id.finishedFragment,R.id.searchFragment
             )
         )
 //        setupActionBarWithNavController(navController,appBarConfiguration)
         navView.setupWithNavController(navController)
+        binding.bottomNavigation.setOnItemReselectedListener { item ->
+            navController.popBackStack(item.itemId, false)
+        }
+        binding.bottomNavigation.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.homeFragment -> {
+                    navController.popBackStack(R.id.homeFragment, false)
+                    true
+                }
+                else -> {
+                    navController.navigate(item.itemId)
+                    true
+                }
+            }
+        }
 
     }
 }
