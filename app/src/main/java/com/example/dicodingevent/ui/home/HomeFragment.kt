@@ -6,11 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.dicodingevent.databinding.FragmentHomeBinding
 import com.example.dicodingevent.ui.adapter.EventAdapter
+import com.example.dicodingevent.util.Result
+import com.example.dicodingevent.util.ViewModelFactory
 
 
 class HomeFragment : Fragment() {
@@ -19,7 +21,7 @@ class HomeFragment : Fragment() {
     private val binding  get() = _binding!!
     private lateinit var adapter: BannerAdapter
     private lateinit var mainAdapter: EventAdapter
-    private val viewModel: HomeViewModel by viewModels()
+    private lateinit var viewModel: HomeViewModel
 
 
     override fun onCreateView(
@@ -33,6 +35,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel = ViewModelProvider(this,ViewModelFactory.getInstance(requireContext()))[HomeViewModel::class.java]
         setupRecyclerView()
         observeViewModel()
         setupSearchView()
@@ -71,25 +74,49 @@ class HomeFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            binding.progressBar.isVisible = isLoading
-        }
 
-        viewModel.upcomingEvent.observe(viewLifecycleOwner){
-            if (it.isNotEmpty()){
-                val maxList = it.take(5)
-                adapter.setData(maxList)
-            } else {
-                binding.tvError.isVisible = true
+        viewModel.upcomingEvent.observe(viewLifecycleOwner){ result ->
+            when(result){
+                is Result.Success -> {
+                    adapter.setData(result.data.take(5))
+                }
+                is Result.Loading -> {
+                    binding.progressBar.isVisible = true
+                }
+                is Result.Empty -> {
+                    binding.progressBar.isVisible = false
+                    binding.tvError.isVisible = true
+                }
+                is Result.Error -> {
+                    binding.progressBar.isVisible = false
+                    binding.tvError.isVisible = true
+                }
+                else -> {
+                    binding.progressBar.isVisible = false
+                    binding.tvError.isVisible = true
+                }
             }
+
         }
 
-        viewModel.event.observe(viewLifecycleOwner){
-            if (it.isNotEmpty()){
-                val maxList = it.take(5)
-                mainAdapter.setData(maxList)
-            } else {
-                binding.tvError.isVisible = true
+        viewModel.event.observe(viewLifecycleOwner){ result ->
+            when(result){
+                is Result.Success -> {
+                    mainAdapter.setData(result.data.take(5))
+                }
+                is Result.Loading -> {
+                    binding.progressBar.isVisible = true
+                }
+                is Result.Empty -> {
+                    binding.progressBar.isVisible = false
+                    binding.tvError.isVisible = true
+                }
+                is Result.Error -> {
+                    binding.tvError.isVisible = true
+                }
+                else -> {
+                    binding.tvError.isVisible = true
+                }
             }
         }
 
@@ -110,6 +137,5 @@ class HomeFragment : Fragment() {
             }
         })
     }
-
 
 }

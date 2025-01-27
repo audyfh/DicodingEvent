@@ -21,12 +21,13 @@ class DetailActivity : AppCompatActivity() {
 
         val args = DetailActivityArgs.fromBundle(intent.extras!!)
         val event = args.event
+        val remainingQuota = event.quota-event.registrants
 
         with(binding){
             textEventName.text = event.name
             textEventTime.text = getString(R.string.starting_from, event.beginTime)
             textEventOwner.text = event.ownerName
-            textEventQuota.text = getString(R.string.remaining_quota, event.quota.toString())
+            textEventQuota.text = getString(R.string.remaining_quota, remainingQuota.toString())
             textEventDescription.text = stripHtmlTags(event.description)
             Glide.with(this@DetailActivity)
                 .load(event.mediaCover)

@@ -6,11 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.dicodingevent.databinding.FragmentUpcomingBinding
 import com.example.dicodingevent.ui.adapter.EventAdapter
+import com.example.dicodingevent.util.Result
+import com.example.dicodingevent.util.ViewModelFactory
 
 
 class UpcomingFragment : Fragment() {
@@ -18,7 +20,7 @@ class UpcomingFragment : Fragment() {
     private var _binding : FragmentUpcomingBinding? = null
     private val binding  get() = _binding!!
     private lateinit var mainAdapter: EventAdapter
-    private val viewModel: UpcomingViewModel by viewModels()
+    private lateinit var viewModel: UpcomingViewModel
 
 
     override fun onCreateView(
@@ -31,6 +33,7 @@ class UpcomingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel = ViewModelProvider(this,ViewModelFactory.getInstance(requireContext()))[UpcomingViewModel::class.java]
         setupRecyclerView()
         observeViewModel()
     }
@@ -57,16 +60,30 @@ class UpcomingFragment : Fragment() {
 
     private fun observeViewModel(){
 
-        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            binding.progressBar.isVisible = isLoading
-        }
-
-        viewModel.event.observe(viewLifecycleOwner){
-            if (it.isNotEmpty()){
-                mainAdapter.setData(it)
-            } else {
-                binding.tvError.isVisible = true
+        viewModel.event.observe(viewLifecycleOwner){ result ->
+            when(result) {
+                is Result.Success -> {
+                    binding.progressBar.isVisible = false
+                    mainAdapter.setData(result.data)
+                }
+                is Result.Loading -> {
+                    binding.progressBar.isVisible = true
+                }
+                is Result.Empty -> {
+                    binding.progressBar.isVisible = false
+                    binding.recyclerViewUpcoming.isVisible = false
+                    binding.tvError.isVisible = true
+                }
+                is Result.Error -> {
+                    binding.progressBar.isVisible = false
+                    binding.tvError.isVisible = true
+                }
+                else -> {
+                    binding.progressBar.isVisible = false
+                    binding.tvError.isVisible = true
+                }
             }
+
         }
     }
 

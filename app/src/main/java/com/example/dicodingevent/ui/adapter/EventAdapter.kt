@@ -2,6 +2,8 @@ package com.example.dicodingevent.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.dicodingevent.data.network.response.Events
@@ -9,7 +11,6 @@ import com.example.dicodingevent.databinding.EventCardBinding
 
 class EventAdapter : RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
 
-    private val events = mutableListOf<Events>()
 
     private var onItemClickCallback: ((Events) -> Unit)? = null
 
@@ -32,9 +33,7 @@ class EventAdapter : RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
     }
 
     fun setData(newEvents: List<Events>) {
-        events.clear()
-        events.addAll(newEvents)
-        notifyDataSetChanged()
+        differ.submitList(newEvents)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
@@ -43,14 +42,28 @@ class EventAdapter : RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
     }
 
     override fun getItemCount(): Int {
-        return events.size
+        return differ.currentList.size
     }
 
     override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
-        val event = events[position]
+        val event = differ.currentList[position]
         holder.bind(event)
-        holder.itemView.setOnClickListener{
+        holder.itemView.setOnClickListener {
             onItemClickCallback?.invoke(event)
         }
+        holder.setIsRecyclable(false)
     }
+
+    private val differCallback = object : DiffUtil.ItemCallback<Events>(){
+        override fun areItemsTheSame(oldItem: Events, newItem: Events): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: Events, newItem: Events): Boolean {
+            return oldItem == newItem
+        }
+    }
+
+    private val differ = AsyncListDiffer(this, differCallback)
+
 }

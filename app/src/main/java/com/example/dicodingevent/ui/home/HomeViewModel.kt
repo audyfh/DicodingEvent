@@ -1,82 +1,59 @@
 package com.example.dicodingevent.ui.home
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.dicodingevent.data.network.ApiConfig
-import com.example.dicodingevent.data.network.response.EventResponse
+import androidx.lifecycle.viewModelScope
 import com.example.dicodingevent.data.network.response.Events
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-
-class HomeViewModel : ViewModel() {
-
-    private val _event = MutableLiveData<List<Events>>()
-    val event : LiveData<List<Events>> = _event
-
-    private val _upcomingEvent = MutableLiveData<List<Events>>()
-    val upcomingEvent : LiveData<List<Events>> = _upcomingEvent
-
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading: LiveData<Boolean> = _isLoading
+import com.example.dicodingevent.data.repo.EventRepository
+import com.example.dicodingevent.util.Result
+import kotlinx.coroutines.launch
 
 
+class HomeViewModel(
+    private val repository: EventRepository
+): ViewModel() {
+
+    private val _event = MutableLiveData<Result<List<Events>>>()
+    val event : LiveData<Result<List<Events>>> = _event
+
+    private val _upcomingEvent = MutableLiveData<Result<List<Events>>>()
+    val upcomingEvent : LiveData<Result<List<Events>>> = _upcomingEvent
 
     init {
         getUpcomingEvent()
-        getAllEvent()
+        getFinishedEvent()
     }
 
     private fun getUpcomingEvent(){
-        _isLoading.value = true
-        val client = ApiConfig.getApiService().getByCategory(1)
-
-        client.enqueue(object : Callback<EventResponse> {
-            override fun onResponse(call: Call<EventResponse>, response: Response<EventResponse>) {
-                _isLoading.value = false
-                if (response.isSuccessful){
-                    _upcomingEvent.value = response.body()?.listEvents
-                } else {
-                    _upcomingEvent.value = emptyList()
-                    Log.e("HomeViewModel",response.message())
+        viewModelScope.launch {
+            try {
+                _upcomingEvent.value = Result.Loading
+                val response = repository.getEvent(1).listEvents
+                if (response.isNotEmpty()){
+                    _upcomingEvent.value = Result.Success(response)
+                } else {_upcomingEvent
+                   _upcomingEvent.value = Result.Empty
                 }
+            } catch (e: Exception){
+                _upcomingEvent.value = Result.Error(e.message.toString())
             }
-
-            override fun onFailure(call: Call<EventResponse>, t: Throwable) {
-                _upcomingEvent.value = emptyList()
-                _isLoading.value = false
-                Log.e("HomeViewModel", t.message.toString())
-            }
-
-        })
+        }
     }
 
-    private fun getAllEvent(){
-        _isLoading.value = true
-        val client = ApiConfig.getApiService().getByCategory(0)
-
-        client.enqueue(object : Callback<EventResponse> {
-            override fun onResponse(call: Call<EventResponse>, response: Response<EventResponse>) {
-                if (response.isSuccessful){
-                    _isLoading.value = false
-                    _event.value = response.body()?.listEvents
+    private fun getFinishedEvent(){
+        viewModelScope.launch {
+            try {
+                _event.value = Result.Loading
+                val response = repository.getEvent(0).listEvents
+                if (response.isNotEmpty()){
+                    _event.value = Result.Success(response)
                 } else {
-                    _event.value = emptyList()
-                    Log.e("HomeViewModel",response.message())
+                    _event.value = Result.Loading
                 }
+            } catch (e: Exception){
+                _event.value = Result.Error(e.message.toString())
             }
-
-            override fun onFailure(call: Call<EventResponse>, t: Throwable) {
-               _isLoading.value = false
-                _event.value = emptyList()
-                Log.e("HomeViewModel", t.message.toString())
-            }
-        })
-
+        }
     }
-
-
-
 }

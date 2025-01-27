@@ -1,49 +1,40 @@
 package com.example.dicodingevent.ui.upcoming
 
-import android.util.Log
+
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.dicodingevent.data.network.ApiConfig
-import com.example.dicodingevent.data.network.response.EventResponse
+import androidx.lifecycle.viewModelScope
 import com.example.dicodingevent.data.network.response.Events
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.example.dicodingevent.data.repo.EventRepository
+import com.example.dicodingevent.util.Result
+import kotlinx.coroutines.launch
 
-class UpcomingViewModel : ViewModel() {
 
-    private val _event = MutableLiveData<List<Events>>()
-    val event : LiveData<List<Events>> = _event
+class UpcomingViewModel(
+    private val repository: EventRepository
+): ViewModel() {
 
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading : LiveData<Boolean> = _isLoading
+    private val _event = MutableLiveData<Result<List<Events>>>()
+    val event : LiveData<Result<List<Events>>> = _event
 
     init {
         getUpcomingEvent()
     }
 
     private fun getUpcomingEvent(){
-        _isLoading.value = true
-        val client = ApiConfig.getApiService().getByCategory(1)
-
-        client.enqueue(object : Callback<EventResponse> {
-            override fun onResponse(call: Call<EventResponse>, response: Response<EventResponse>) {
-                _isLoading.value = false
-                if (response.isSuccessful){
-                    _event.value = response.body()?.listEvents
-                } else {
-                    _event.value = emptyList()
-                    Log.e("UpcomingViewModel",response.message())
-                }
-            }
-
-            override fun onFailure(call: Call<EventResponse>, t: Throwable) {
-                _event.value = emptyList()
-                _isLoading.value = false
-                Log.e("UpcomingViewModel", t.message.toString())
-            }
-
-        })
+       viewModelScope.launch {
+           try {
+               _event.value = Result.Loading
+               val response = repository.getEvent(1).listEvents
+               if (response.isNotEmpty()){
+                   _event.value = Result.Success(response)
+               } else {
+                   _event.value = Result.Empty
+               }
+           } catch (e: Exception) {
+               _event.value = Result.Error(e.message.toString())
+           }
+       }
     }
 }

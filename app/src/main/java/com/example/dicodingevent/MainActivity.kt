@@ -3,7 +3,6 @@ package com.example.dicodingevent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.example.dicodingevent.databinding.ActivityMainBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -20,12 +19,6 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
         val navController = navHostFragment.navController
-        val appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.homeFragment,R.id.upcomingFragment,R.id.finishedFragment,R.id.searchFragment
-            )
-        )
-//        setupActionBarWithNavController(navController,appBarConfiguration)
         navView.setupWithNavController(navController)
         binding.bottomNavigation.setOnItemReselectedListener { item ->
             navController.popBackStack(item.itemId, false)

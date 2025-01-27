@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.devtools.ksp)
     id ("androidx.navigation.safeargs")
     id("kotlin-parcelize")
 }
@@ -12,7 +13,7 @@ android {
     defaultConfig {
         applicationId = "com.example.dicodingevent"
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -62,4 +63,6 @@ dependencies {
     implementation (libs.androidx.fragment.ktx)
     implementation (libs.androidx.lifecycle.viewmodel.ktx)
     implementation (libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
 }

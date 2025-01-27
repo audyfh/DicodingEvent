@@ -1,48 +1,39 @@
 package com.example.dicodingevent.ui.finished
 
-import android.util.Log
+
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.dicodingevent.data.network.ApiConfig
-import com.example.dicodingevent.data.network.response.EventResponse
+import androidx.lifecycle.viewModelScope
 import com.example.dicodingevent.data.network.response.Events
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.example.dicodingevent.data.repo.EventRepository
+import kotlinx.coroutines.launch
+import com.example.dicodingevent.util.Result
 
-class FinishedViewModel : ViewModel() {
-    private val _event = MutableLiveData<List<Events>>()
-    val event : LiveData<List<Events>> = _event
 
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading : LiveData<Boolean> = _isLoading
+class FinishedViewModel(
+    private val eventRepository: EventRepository
+): ViewModel() {
+    private val _event = MutableLiveData<Result<List<Events>>>()
+    val event : LiveData<Result<List<Events>>> = _event
 
     init {
-        getFinishedEvent()
+       getFinishedEvent()
     }
 
     private fun getFinishedEvent(){
-        _isLoading.value = true
-        val client = ApiConfig.getApiService().getByCategory(0)
-
-        client.enqueue(object : Callback<EventResponse> {
-            override fun onResponse(call: Call<EventResponse>, response: Response<EventResponse>) {
-                _isLoading.value = false
-                if (response.isSuccessful){
-                    _event.value = response.body()?.listEvents
+        viewModelScope.launch {
+            try {
+                _event.value = Result.Loading
+                val response = eventRepository.getEvent(0).listEvents
+                if (response.isNotEmpty()){
+                    _event.value = Result.Success(response)
                 } else {
-                    _event.value = emptyList()
-                    Log.e("FinishedViewModel",response.message())
+                    _event.value = Result.Loading
                 }
+            } catch (e: Exception) {
+                _event.value = Result.Error(e.message.toString())
             }
-
-            override fun onFailure(call: Call<EventResponse>, t: Throwable) {
-                _isLoading.value = false
-                _event.value = emptyList()
-                Log.e("FinishedViewModel", t.message.toString())
-            }
-
-        })
+        }
     }
 }
