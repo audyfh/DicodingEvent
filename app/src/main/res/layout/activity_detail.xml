@@ -26,6 +26,16 @@
             android:contentDescription="@string/event_cover"
             android:layout_marginTop="8dp" />
 
+        <!-- Love Icon -->
+        <ImageView
+            android:id="@+id/imageLove"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="end"
+            android:layout_marginTop="8dp"
+            android:contentDescription="@string/add_to_favorites"
+            android:src="@drawable/ic_love" />
+
         <!-- Event Name -->
         <TextView
             android:id="@+id/textEventName"

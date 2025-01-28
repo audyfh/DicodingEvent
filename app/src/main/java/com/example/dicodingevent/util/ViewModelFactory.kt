@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.dicodingevent.data.repo.EventRepository
+import com.example.dicodingevent.ui.bookmark.BookmarkViewModel
+import com.example.dicodingevent.ui.detail.DetailViewModel
 import com.example.dicodingevent.ui.finished.FinishedViewModel
 import com.example.dicodingevent.ui.home.HomeViewModel
 import com.example.dicodingevent.ui.search.SearchViewModel
@@ -23,6 +25,10 @@ class ViewModelFactory private constructor(
             return UpcomingViewModel(repository) as T
         } else if (modelClass.isAssignableFrom(SearchViewModel::class.java)){
             return SearchViewModel(repository) as T
+        } else if (modelClass.isAssignableFrom(DetailViewModel::class.java)){
+            return DetailViewModel(repository) as T
+        } else if (modelClass.isAssignableFrom(BookmarkViewModel::class.java)){
+            return BookmarkViewModel(repository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
     }

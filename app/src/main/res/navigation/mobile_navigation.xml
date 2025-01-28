@@ -57,5 +57,14 @@
             android:id="@+id/action_searchFragment_to_detailActivity"
             app:destination="@id/detailActivity" />
     </fragment>
+    <fragment
+        android:id="@+id/bookmarkFragment"
+        android:name="com.example.dicodingevent.ui.bookmark.BookmarkFragment"
+        android:label="fragment_bookmark"
+        tools:layout="@layout/fragment_bookmark" >
+        <action
+            android:id="@+id/action_bookmarkFragment_to_detailActivity"
+            app:destination="@id/detailActivity" />
+    </fragment>
 
 </navigation>
