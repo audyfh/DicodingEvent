@@ -25,9 +25,7 @@
     <string name="remaining_quota">Remaining Quota: %1$s</string>
     <string name="starting_from">Starting From: %1$s</string>
     <string name="add_to_favorites">add</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="bookmark">Bookmark</string>
     <string name="bookmark_event">Bookmark Event</string>
-    <!-- TODO: Remove or change this placeholder text -->
 </resources>
