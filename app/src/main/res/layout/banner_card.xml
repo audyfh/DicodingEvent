@@ -29,7 +29,7 @@
             android:alpha="0.7"
             android:padding="8dp"
             android:text="@string/event_title"
-            android:textColor="@android:color/white"
+            android:textColor="?attr/colorOnBackground"
             android:textSize="14sp"
             android:ellipsize="end"
             android:lines="2"

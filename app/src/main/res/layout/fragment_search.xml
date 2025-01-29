@@ -24,7 +24,7 @@
         android:visibility="gone"
         android:text="@string/no_results_found"
         android:textSize="16sp"
-        android:textColor="@color/black"
+        android:textColor="?attr/colorOnBackground"
         android:gravity="center"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -13,4 +13,9 @@ object Injection {
         val dao = database.eventDao()
         return EventRepository.getInstansce(apiService,dao)
     }
+
+    fun providePrefRepository(context: Context) : PreferencesRepository {
+        return PreferencesRepository.getInstance(context)
+    }
 }
+

@@ -66,5 +66,10 @@
             android:id="@+id/action_bookmarkFragment_to_detailActivity"
             app:destination="@id/detailActivity" />
     </fragment>
+    <fragment
+        android:id="@+id/settingFragment"
+        android:name="com.example.dicodingevent.ui.settings.SettingFragment"
+        android:label="fragment_setting"
+        tools:layout="@layout/fragment_setting" />
 
 </navigation>

@@ -16,4 +16,8 @@
         android:id="@+id/bookmarkFragment"
         android:icon="@drawable/ic_loved"
         android:title="@string/bookmark"/>
+    <item
+        android:id="@+id/settingFragment"
+        android:icon="@drawable/ic_setting"
+        android:title="@string/setting"/>
 </menu>

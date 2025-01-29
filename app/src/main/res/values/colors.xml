@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
+    <color name="primary">#6200EE</color>
+    <color name="onPrimary">#FFFFFF</color>
+    <color name="background">#FFFFFF</color>
+    <color name="onBackground">#000000</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="onSurface">#000000</color>
 </resources>
